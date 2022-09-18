@@ -1,0 +1,154 @@
+/petFilter:
+    get:
+      tags:
+        - pet
+      summary: Filters Pets by range of prices
+      description: Provide minimum and maximum price for filtering
+      operationId: filterPrice
+      parameters:
+        - name: min
+          in: query
+          description: Minimum filter price
+          required: true
+          schema:
+            type: number
+        - name: max
+          in: query
+          description: Maximum filter price
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pet'          
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pet'
+        '400':
+          description: Invalid prices
+      security:
+        - petstore_auth:
+            - read:pets
+
+
+2)
+
+/orders:
+    get:
+      tags:
+        - order
+      summary: Get your orders
+      description: Get your history of orders
+      operationId: getOrders
+      responses:
+         '200':
+           description: successful operation
+           content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Order'          
+              application/xml:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Order'
+         '400':
+            description: Invalid status value
+      security:
+          - petstore_auth:
+              - write:pets
+              - read:pets
+  /order/{orderId}:
+    get:
+      tags:
+        - order
+      summary: Get your order by id
+      description: Get your order
+      operationId: getOrderById
+      parameters:
+        - name: orderId
+          in: path
+          description: Order id to get
+          required: false
+          schema:
+            type: id
+      responses:
+         '200':
+           description: successful operation
+           content:
+              application/json:
+                schema:
+                  type: Order
+                  items:
+                    $ref: '#/components/schemas/Order'          
+              application/xml:
+                schema:
+                  type: Order
+                  items:
+                    $ref: '#/components/schemas/Order'
+         '400':
+            description: Invalid status value
+      security:
+          - petstore_auth:
+              - read:pets
+  /order:
+    post:
+      tags:
+        - order
+      summary: Create new order
+      description: Create new order
+      operationId: makeOrder
+      requestBody:
+        description: Create new order with pet id and quatity
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaceOrder'
+          text/plain:
+            schema:
+              type: string
+      responses:
+         '200':
+           description: successful operation
+           content:
+              application/json:
+                schema:
+                  type: Order
+                  items:
+                    $ref: '#/components/schemas/Order'          
+              application/xml:
+                schema:
+                  type: Order
+                  items:
+                    $ref: '#/components/schemas/Order'
+         '400':
+            description: Invalid status value
+      security:
+          - petstore_auth:
+              - write:pets
+              - read:pets
+
+
+schemas:
+    PlaceOrder:
+      type: object
+      properties:
+        petId:
+          type: integer
+          format: int64
+          example: 10
+        quantity:
+          type: integer
+          format: int64
+          example: 10
